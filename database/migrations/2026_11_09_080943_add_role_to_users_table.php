@@ -1,42 +1,22 @@
-<?php 
- 
-namespace App\Models; 
- 
-use Illuminate\Database\Eloquent\Factories\HasFactory; 
-use Illuminate\Foundation\Auth\User as Authenticatable; 
-use Illuminate\Notifications\Notifiable; 
- 
-class User extends Authenticatable 
-{ 
-    use HasFactory, Notifiable; 
- 
-    protected $fillable = [ 
-        'name', 
-        'email', 
-        'password', 
-        'role', 
-    ]; 
- 
-    protected $hidden = [ 
-        'password', 
-        'remember_token', 
-    ]; 
- 
-    protected function casts(): array 
-    { 
-        return [ 
-            'email_verified_at' => 'datetime', 
-            'password' => 'hashed', 
-        ]; 
-    } 
- 
-    public function orders() 
-    { 
-        return $this->hasMany(Order::class); 
-    } 
- 
-    public function isAdmin(): bool 
-    { 
-        return $this->role === 'admin'; 
-    } 
-}
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role')->default('customer')->after('password');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
+    }
+};
