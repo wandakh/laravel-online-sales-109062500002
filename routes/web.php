@@ -5,11 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\ProductCatalogController;
-use app\Http\Controllers\CartController;
-
-Route::get('/', function () {
-    return 'Halaman Katalog Produk (Akan dibangun di Milestone 4)';
-})->name('shop.index');
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\CheckoutController;
 
 Route::middleware('guest')->group(function () { 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login'); 
@@ -27,12 +25,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:admin'])->group
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy'); 
     // Route::resource('products', AdminProductController::class)->except('show'); 
 });
+
 Route::middleware(['auth','role:customer'])->group(function () { 
     Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index'); 
     Route::post('/keranjang/{product}', [CartController::class, 'store'])->name('cart.store'); 
     Route::patch('/keranjang/{product}', [CartController::class, 'update'])->name('cart.update'); 
     Route::delete('/keranjang/{product}', [CartController::class, 'destroy'])->name('cart.destroy'); 
+    
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index'); 
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store'); 
+    
+    Route::get('/pesanan', [CustomerOrderController::class, 'index'])->name('orders.index'); 
+    Route::get('/pesanan/{order}', [CustomerOrderController::class, 'show'])->name('orders.show'); 
 }); 
 
+// Route Halaman Utama & Katalog
 Route::get('/', [ProductCatalogController::class, 'index'])->name('shop.index'); 
-Route::get('/produk/{product:slug}', [ProductCatalogController::class, 'show'])->name('shop.show'); 
+Route::get('/produk/{product:slug}', [ProductCatalogController::class, 'show'])->name('shop.show');
