@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\ProductCatalogController;
+
+Route::get('/', function () {
+    return 'Halaman Katalog Produk (Akan dibangun di Milestone 4)';
+})->name('shop.index');
 
 Route::middleware('guest')->group(function () { 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login'); 
@@ -21,3 +26,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:admin'])->group
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy'); 
     // Route::resource('products', AdminProductController::class)->except('show'); 
 });
+
+Route::get('/', [ProductCatalogController::class, 'index'])->name('shop.index'); 
+Route::get('/produk/{product:slug}', [ProductCatalogController::class, 'show'])->name('shop.show'); 
